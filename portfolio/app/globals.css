@@ -1,0 +1,184 @@
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #fafaf9;
+    --foreground: #111114;
+    --surface: #f2f2f0;
+    --surface-hover: #e8e8e5;
+    --border: #e0e0dc;
+    --border-strong: #c4c4be;
+    --accent: #2563eb;
+    --accent-fg: #ffffff;
+    --accent-dim: #eff6ff;
+    --accent-secondary: #7c3aed;
+    --muted: #71717a;
+    --muted-dim: #a1a1aa;
+    --success: #16a34a;
+    --success-dim: #dcfce7;
+    --warning: #d97706;
+    --warning-dim: #fef3c7;
+  }
+
+  .dark {
+    --background: #0c0c0e;
+    --foreground: #e8e8e8;
+    --surface: #111116;
+    --surface-hover: #1a1a1f;
+    --border: #252528;
+    --border-strong: #3a3a40;
+    --accent: #38bdf8;
+    --accent-fg: #0c0c0e;
+    --accent-dim: #0c1f2e;
+    --accent-secondary: #a78bfa;
+    --muted: #71717a;
+    --muted-dim: #4b5563;
+    --success: #4ade80;
+    --success-dim: #052e16;
+    --warning: #fbbf24;
+    --warning-dim: #1c1002;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Thin scrollbar */
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: var(--accent-dim);
+    color: var(--accent);
+  }
+}
+
+@layer components {
+  /* Mono font utility */
+  .font-mono {
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+  }
+
+  /* Section divider */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .section-divider::before,
+  .section-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* File list item */
+  .file-item {
+    @apply flex items-center gap-3 py-2.5 px-3 cursor-pointer transition-all duration-100;
+    border-left: 2px solid transparent;
+    color: var(--muted);
+  }
+  .file-item:hover {
+    background: var(--surface-hover);
+    color: var(--foreground);
+    border-left-color: var(--border-strong);
+  }
+  .file-item.active {
+    background: var(--surface);
+    color: var(--foreground);
+    border-left-color: var(--accent);
+  }
+
+  /* Tag chip */
+  .tag-chip {
+    @apply inline-flex items-center px-2 py-0.5 text-xs font-mono;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 3px;
+  }
+
+  /* Status indicators */
+  .status-badge {
+    @apply inline-flex items-center gap-1.5 px-2 py-0.5 text-xs font-mono;
+    border-radius: 3px;
+  }
+  .status-badge.completed {
+    background: var(--success-dim);
+    color: var(--success);
+    border: 1px solid color-mix(in srgb, var(--success) 20%, transparent);
+  }
+  .status-badge.experimental {
+    background: var(--warning-dim);
+    color: var(--warning);
+    border: 1px solid color-mix(in srgb, var(--warning) 20%, transparent);
+  }
+
+  /* Panel border */
+  .panel {
+    border: 1px solid var(--border);
+    background: var(--background);
+  }
+
+  /* Command prefix */
+  .cmd-prefix::before {
+    content: ">";
+    color: var(--accent);
+    font-family: "JetBrains Mono", monospace;
+    margin-right: 8px;
+    font-size: 0.75rem;
+  }
+
+  /* Link style */
+  .dev-link {
+    @apply font-mono text-xs transition-colors duration-100;
+    color: var(--accent);
+  }
+  .dev-link:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .font-mono {
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+  }
+}
