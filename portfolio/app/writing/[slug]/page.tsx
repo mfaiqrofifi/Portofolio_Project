@@ -1,14 +1,14 @@
-import { articles } from "@/lib/dummy-articles";
+import { getArticleBySlug, getRelatedArticles } from "@/lib/queries/articles";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import SafeImage from "@/components/SafeImage";
 import { ArrowLeft, Clock } from "lucide-react";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 interface Props {
   params: { slug: string };
-}
-
-export function generateStaticParams() {
-  return articles.map((a) => ({ slug: a.slug }));
 }
 
 function formatDate(iso: string) {
@@ -19,16 +19,11 @@ function formatDate(iso: string) {
   });
 }
 
-export default function ArticleDetailPage({ params }: Props) {
-  const article = articles.find((a) => a.slug === params.slug);
+export default async function ArticleDetailPage({ params }: Props) {
+  const article = await getArticleBySlug(params.slug);
   if (!article) notFound();
 
-  const related = articles
-    .filter(
-      (a) =>
-        a.id !== article.id && a.tags.some((t) => article.tags.includes(t)),
-    )
-    .slice(0, 3);
+  const related = await getRelatedArticles(article.id, article.tags);
 
   return (
     <div className="max-w-2xl mx-auto px-5 py-10 md:py-16">
@@ -57,14 +52,14 @@ export default function ArticleDetailPage({ params }: Props) {
 
         <div className="flex flex-wrap items-center gap-4 mb-5">
           <span className="font-mono text-xs" style={{ color: "var(--muted)" }}>
-            {formatDate(article.publishedAt)}
+            {formatDate(article.published_at ?? "")}
           </span>
           <span
             className="flex items-center gap-1.5 font-mono text-xs"
             style={{ color: "var(--muted)" }}
           >
             <Clock size={11} />
-            {article.readTime} min read
+            {article.read_time} min read
           </span>
         </div>
 
@@ -77,11 +72,28 @@ export default function ArticleDetailPage({ params }: Props) {
         </div>
       </div>
 
+      {/* Cover image — only rendered when a URL exists */}
+      {article.cover_image && (
+        <div
+          className="relative w-full h-52 sm:h-72 mb-8 border-2 overflow-hidden"
+          style={{
+            borderColor: "var(--border)",
+            boxShadow: "3px 3px 0px var(--pixel-border)",
+          }}
+        >
+          <SafeImage
+            src={article.cover_image}
+            alt={article.title}
+            style={{ filter: "brightness(0.88) saturate(0.9)" }}
+          />
+        </div>
+      )}
+
       <div className="h-px mb-10" style={{ background: "var(--border)" }} />
 
       {/* Article content */}
       <article className="space-y-0">
-        {article.content
+        {(article.content ?? "")
           .trim()
           .split("\n")
           .map((line, i) => {
@@ -220,7 +232,8 @@ export default function ArticleDetailPage({ params }: Props) {
                     className="font-mono text-[10px]"
                     style={{ color: "var(--muted-dim)" }}
                   >
-                    {formatDate(a.publishedAt)} &middot; {a.readTime}m read
+                    {formatDate(a.published_at ?? "")} &middot; {a.read_time}m
+                    read
                   </p>
                 </div>
                 <span

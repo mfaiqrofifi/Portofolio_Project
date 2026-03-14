@@ -1,16 +1,15 @@
-import { activities } from "@/lib/dummy-activity";
+import { getActivityBySlug } from "@/lib/queries/activities";
 import { notFound } from "next/navigation";
-import Image from "next/image";
+import SafeImage from "@/components/SafeImage";
 import Link from "next/link";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 interface Props {
   params: { slug: string };
-}
-
-export function generateStaticParams() {
-  return activities.map((a) => ({ slug: a.slug }));
 }
 
 const tagColors: Record<string, { bg: string; text: string; border: string }> =
@@ -28,11 +27,11 @@ const tagColors: Record<string, { bg: string; text: string; border: string }> =
     Event: { bg: "rgba(245,158,11,0.15)", text: "#fbbf24", border: "#fbbf24" },
   };
 
-export default function ActivityDetailPage({ params }: Props) {
-  const item = activities.find((a) => a.slug === params.slug);
+export default async function ActivityDetailPage({ params }: Props) {
+  const item = await getActivityBySlug(params.slug);
   if (!item) notFound();
 
-  const colors = tagColors[item.tag] ?? tagColors["Learning"];
+  const colors = tagColors[item.tag ?? "Learning"] ?? tagColors["Learning"];
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16">
@@ -45,21 +44,18 @@ export default function ActivityDetailPage({ params }: Props) {
         Back to Activity
       </Link>
 
-      {/* Hero image */}
-      <div
-        className="relative h-64 sm:h-80 mb-8 border-2"
-        style={{
-          borderColor: "var(--border)",
-          boxShadow: "4px 4px 0px var(--pixel-border)",
-        }}
-      >
-        <Image
-          src={item.image}
-          alt={item.title}
-          fill
-          className="object-cover"
-        />
-      </div>
+      {/* Hero image — only rendered when a URL exists */}
+      {item.image && (
+        <div
+          className="relative h-64 sm:h-80 mb-8 border-2 overflow-hidden"
+          style={{
+            borderColor: "var(--border)",
+            boxShadow: "4px 4px 0px var(--pixel-border)",
+          }}
+        >
+          <SafeImage src={item.image} alt={item.title} />
+        </div>
+      )}
 
       {/* Metadata */}
       <div className="flex items-center gap-3 mb-6">
@@ -74,7 +70,7 @@ export default function ActivityDetailPage({ params }: Props) {
           {item.tag}
         </span>
         <span className="text-sm" style={{ color: "var(--muted)" }}>
-          {formatDate(item.date)}
+          {formatDate(item.date ?? "")}
         </span>
       </div>
 
@@ -103,7 +99,7 @@ export default function ActivityDetailPage({ params }: Props) {
         {item.description}
       </div>
 
-      {item.relatedLinks && item.relatedLinks.length > 0 && (
+      {item.links && item.links.length > 0 && (
         <div className="mt-10">
           <p
             className="font-pixel text-[9px] mb-4"
@@ -112,7 +108,7 @@ export default function ActivityDetailPage({ params }: Props) {
             Links
           </p>
           <div className="flex flex-wrap gap-3">
-            {item.relatedLinks.map((link) => (
+            {item.links.map((link) => (
               <a
                 key={link.url}
                 href={link.url}

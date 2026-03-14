@@ -1,51 +1,52 @@
 ﻿"use client";
 
 import { motion } from "framer-motion";
-
-const profile = [
-  { key: "name", value: "Faiq Rofifi" },
-  { key: "role", value: "Software Engineer" },
-  { key: "location", value: "Indonesia" },
-  { key: "status", value: "open to opportunities" },
-  {
-    key: "focus",
-    value:
-      "systems \u00B7 fullstack products \u00B7 AI workflows \u00B7 infrastructure",
-  },
-];
-
-const techStack = [
-  { group: "Languages", items: ["Go", "Rust", "Python", "TypeScript", "SQL"] },
-  { group: "Frontend", items: ["Next.js", "React", "Tailwind CSS"] },
-  {
-    group: "Databases",
-    items: ["PostgreSQL", "Redis", "MongoDB", "ClickHouse"],
-  },
-  {
-    group: "AI / ML",
-    items: ["OpenAI API", "LangChain", "pgvector", "Hugging Face"],
-  },
-  {
-    group: "Infrastructure",
-    items: ["Docker", "Kubernetes", "Terraform", "Nginx"],
-  },
-  { group: "Cloud", items: ["AWS", "GCP", "Cloudflare"] },
-  {
-    group: "Observability",
-    items: ["Prometheus", "Grafana", "OpenTelemetry"],
-  },
-];
-
-const strengths = [
-  "Designing production REST / gRPC APIs and distributed backends",
-  "Fullstack product delivery with Next.js + Go, from schema to UI",
-  "LLM integrations: RAG pipelines, function calling, AI-powered tooling",
-  "Distributed systems: message queues, event-driven architecture, sagas",
-  "CI/CD pipelines, GitOps with ArgoCD, zero-downtime Kubernetes deployments",
-  "Performance debugging: profiling, tracing, load testing, query optimization",
-];
+import { useEffect, useState } from "react";
+import SafeImage from "@/components/SafeImage";
+import type { Profile } from "@/lib/types";
 
 export default function AboutPage() {
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/profile")
+      .then((res) => res.json())
+      .then((data) => {
+        setProfile(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 sm:px-5 py-8 md:py-16">
+        <p className="text-sm" style={{ color: "var(--muted)" }}>
+          Loading...
+        </p>
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 sm:px-5 py-8 md:py-16">
+        <p className="text-sm" style={{ color: "var(--muted)" }}>
+          Profile not found.
+        </p>
+      </div>
+    );
+  }
+
+  const profileData = [
+    { key: "name", value: profile.name },
+    { key: "role", value: profile.role },
+    ...(profile.location ? [{ key: "location", value: profile.location }] : []),
+    ...(profile.status ? [{ key: "status", value: profile.status }] : []),
+    ...(profile.focus ? [{ key: "focus", value: profile.focus }] : []),
+  ];
+
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-5 py-8 md:py-16">
       {/* Header */}
@@ -75,26 +76,40 @@ export default function AboutPage() {
         className="flex items-center gap-5 mb-6 p-4 border"
         style={{ borderColor: "var(--border)", background: "var(--surface)" }}
       >
-        {/* Profile photo — replace this div with <img src="..." /> when ready */}
-        <div
-          className="shrink-0 w-14 h-14 flex items-center justify-center font-mono text-base font-semibold select-none"
-          style={{
-            background: "var(--surface-hover)",
-            border: "1px solid var(--border-strong)",
-            color: "var(--accent)",
-          }}
-        >
-          FR
-        </div>
+        {/* Profile photo */}
+        {profile.photo_url ? (
+          <div
+            className="shrink-0 w-14 h-14 relative overflow-hidden"
+            style={{ border: "1px solid var(--border-strong)" }}
+          >
+            <SafeImage src={profile.photo_url} alt={profile.name} />
+          </div>
+        ) : (
+          <div
+            className="shrink-0 w-14 h-14 flex items-center justify-center font-mono text-base font-semibold select-none"
+            style={{
+              background: "var(--surface-hover)",
+              border: "1px solid var(--border-strong)",
+              color: "var(--accent)",
+            }}
+          >
+            {profile.name
+              .split(" ")
+              .map((n) => n[0])
+              .join("")
+              .toUpperCase()
+              .slice(0, 2)}
+          </div>
+        )}
         <div>
           <p
             className="font-mono text-sm font-semibold"
             style={{ color: "var(--foreground)" }}
           >
-            Faiq Rofifi
+            {profile.name}
           </p>
           <p className="font-mono text-xs" style={{ color: "var(--accent)" }}>
-            Software Engineer
+            {profile.role}
           </p>
           <p
             className="font-mono text-[11px] mt-1"
@@ -113,7 +128,7 @@ export default function AboutPage() {
         className="border mb-8"
         style={{ borderColor: "var(--border)" }}
       >
-        {profile.map(({ key, value }) => (
+        {profileData.map(({ key, value }) => (
           <div
             key={key}
             className="flex items-start border-b last:border-0"
@@ -158,7 +173,7 @@ export default function AboutPage() {
         transition={{ delay: 0.15 }}
         className="flex flex-col gap-1.5 mb-8"
       >
-        {strengths.map((s) => (
+        {profile.strengths.map((s) => (
           <li key={s} className="flex items-start gap-2">
             <span
               className="font-mono text-xs mt-px shrink-0"
@@ -186,7 +201,7 @@ export default function AboutPage() {
         transition={{ delay: 0.2 }}
         className="flex flex-col gap-3"
       >
-        {techStack.map(({ group, items }) => (
+        {profile.tech_stack.map(({ group, items }) => (
           <div key={group} className="flex items-start gap-3 sm:gap-4">
             <span
               className="font-mono text-xs w-24 sm:w-28 shrink-0 mt-0.5"

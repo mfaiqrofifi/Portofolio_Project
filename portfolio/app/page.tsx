@@ -3,29 +3,8 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
-
-const domains = [
-  {
-    key: "systems",
-    label: "systems",
-    desc: "REST & gRPC APIs, distributed services, message queues",
-  },
-  {
-    key: "products",
-    label: "products",
-    desc: "fullstack web applications from schema to UI",
-  },
-  {
-    key: "ai",
-    label: "ai",
-    desc: "LLM integrations, RAG pipelines, AI-powered tooling",
-  },
-  {
-    key: "infrastructure",
-    label: "infrastructure",
-    desc: "CI/CD, Kubernetes, GitOps, cloud architecture",
-  },
-];
+import { useEffect, useState } from "react";
+import type { Home } from "@/lib/types";
 
 const sections = [
   { href: "/projects", label: "projects", desc: "work across all domains" },
@@ -40,6 +19,43 @@ const sections = [
 ];
 
 export default function HomePage() {
+  const [home, setHome] = useState<Home | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/home")
+      .then((res) => res.json())
+      .then((data) => {
+        setHome(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <main className="max-w-2xl mx-auto px-4 sm:px-5 py-14 md:py-24">
+        <p className="text-sm" style={{ color: "var(--muted)" }}>
+          Loading...
+        </p>
+      </main>
+    );
+  }
+
+  if (!home) {
+    return (
+      <main className="max-w-2xl mx-auto px-4 sm:px-5 py-14 md:py-24">
+        <p className="text-sm" style={{ color: "var(--muted)" }}>
+          Content not found. Please run the database migration.
+        </p>
+      </main>
+    );
+  }
+
+  // Default values for safety
+  const domains = home.domains || [];
+  const footerHint = home.footer_hint || "";
+
   return (
     <main className="max-w-2xl mx-auto px-4 sm:px-5 py-14 md:py-24">
       {/* Profile */}
@@ -49,29 +65,27 @@ export default function HomePage() {
         transition={{ duration: 0.4 }}
       >
         <p className="font-mono text-xs mb-6" style={{ color: "var(--muted)" }}>
-          ~ /home/faiq
+          {home.tagline}
         </p>
 
         <h1
           className="font-mono text-2xl md:text-3xl font-semibold mb-1"
           style={{ color: "var(--foreground)" }}
         >
-          Faiq Rofifi
+          {home.name}
         </h1>
         <p
           className="font-mono text-sm mb-6"
           style={{ color: "var(--accent)" }}
         >
-          Software Engineer
+          {home.title}
         </p>
 
         <p
           className="text-sm leading-relaxed mb-10"
           style={{ color: "var(--muted)", maxWidth: "38rem" }}
         >
-          I build reliable systems, fullstack products, and AI-powered
-          workflows. Focused on correctness, observability, and keeping
-          complexity where it belongs.
+          {home.intro}
         </p>
       </motion.div>
 
@@ -189,8 +203,7 @@ export default function HomePage() {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.65 }}
       >
-        <span style={{ color: "var(--accent)" }}>$</span> open to backend,
-        fullstack, and AI engineering roles
+        <span style={{ color: "var(--accent)" }}>$</span> {footerHint}
       </motion.p>
     </main>
   );

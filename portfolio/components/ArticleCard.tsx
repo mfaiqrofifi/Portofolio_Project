@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import SafeImage from "@/components/SafeImage";
 import { motion } from "framer-motion";
 import { Clock, BookOpen } from "lucide-react";
-import { Article } from "@/lib/dummy-articles";
+import { Article } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 
 // Color palette for book spines
@@ -69,12 +69,11 @@ export default function ArticleCard({
               className="relative w-28 flex-shrink-0 border-r-2"
               style={{ borderColor: "var(--border)" }}
             >
-              <Image
-                src={article.coverImage}
+              <SafeImage
+                src={article.cover_image}
                 alt={article.title}
-                fill
-                className="object-cover"
                 style={{ filter: "brightness(0.85) saturate(0.9)" }}
+                placeholderLabel="cover"
               />
               <div
                 className="absolute inset-0"
@@ -113,9 +112,9 @@ export default function ArticleCard({
               >
                 <span className="flex items-center gap-1">
                   <Clock size={11} />
-                  {article.readTime} min
+                  {article.read_time} min
                 </span>
-                <span>{formatDate(article.publishedAt)}</span>
+                <span>{formatDate(article.published_at ?? "")}</span>
               </div>
             </div>
           </motion.div>
@@ -157,11 +156,11 @@ export default function ArticleCard({
             className="relative w-44 sm:w-52 flex-shrink-0 border-r-2 hidden sm:block"
             style={{ borderColor: "var(--border)" }}
           >
-            <Image
-              src={article.coverImage}
+            <SafeImage
+              src={article.cover_image}
               alt={article.title}
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              className="transition-transform duration-500 group-hover:scale-105"
+              placeholderLabel="cover"
             />
           </div>
 
@@ -192,11 +191,11 @@ export default function ArticleCard({
             >
               <span className="flex items-center gap-1">
                 <Clock size={12} />
-                {article.readTime} min read
+                {article.read_time} min read
               </span>
               <span className="flex items-center gap-1">
                 <BookOpen size={12} />
-                {formatDate(article.publishedAt)}
+                {formatDate(article.published_at ?? "")}
               </span>
             </div>
           </div>

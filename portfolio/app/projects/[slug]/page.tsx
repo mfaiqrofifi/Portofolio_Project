@@ -1,19 +1,18 @@
-import { projects } from "@/lib/dummy-projects";
+import { getProjectBySlug } from "@/lib/queries/projects";
 import { notFound } from "next/navigation";
-import Image from "next/image";
+import SafeImage from "@/components/SafeImage";
 import Link from "next/link";
 import { Github, ExternalLink, ArrowLeft } from "lucide-react";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 interface Props {
   params: { slug: string };
 }
 
-export function generateStaticParams() {
-  return projects.map((p) => ({ slug: p.slug }));
-}
-
-export default function ProjectDetailPage({ params }: Props) {
-  const project = projects.find((p) => p.slug === params.slug);
+export default async function ProjectDetailPage({ params }: Props) {
+  const project = await getProjectBySlug(params.slug);
   if (!project) notFound();
 
   return (
@@ -30,17 +29,16 @@ export default function ProjectDetailPage({ params }: Props) {
 
       {/* Hero image */}
       <div
-        className="relative h-64 sm:h-80 mb-8 border-2"
+        className="relative h-64 sm:h-80 mb-8 border-2 overflow-hidden"
         style={{
           borderColor: "var(--border)",
           boxShadow: "4px 4px 0px var(--pixel-border)",
         }}
       >
-        <Image
+        <SafeImage
           src={project.thumbnail}
           alt={project.title}
-          fill
-          className="object-cover"
+          placeholderLabel={project.domain ?? "project"}
         />
       </div>
 
@@ -134,7 +132,7 @@ export default function ProjectDetailPage({ params }: Props) {
           Tech Stack
         </p>
         <div className="flex flex-wrap gap-2">
-          {project.techStack.map((tech) => (
+          {project.tech_stack.map((tech) => (
             <span key={tech} className="tech-badge text-sm px-3 py-1.5">
               {tech}
             </span>
@@ -155,17 +153,16 @@ export default function ProjectDetailPage({ params }: Props) {
             {project.screenshots.map((src, i) => (
               <div
                 key={i}
-                className="relative h-48 border-2"
+                className="relative h-48 border-2 overflow-hidden"
                 style={{
                   borderColor: "var(--border)",
                   boxShadow: "2px 2px 0px var(--pixel-border)",
                 }}
               >
-                <Image
+                <SafeImage
                   src={src}
                   alt={`Screenshot ${i + 1}`}
-                  fill
-                  className="object-cover"
+                  placeholderLabel="screenshot"
                 />
               </div>
             ))}
@@ -179,7 +176,7 @@ export default function ProjectDetailPage({ params }: Props) {
         style={{ borderColor: "var(--border)" }}
       >
         <a
-          href={project.githubUrl}
+          href={project.github_url ?? "#"}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2 font-pixel text-[9px] px-5 py-3 border-2 transition-all hover:-translate-y-0.5"
@@ -193,9 +190,9 @@ export default function ProjectDetailPage({ params }: Props) {
           <Github size={13} />
           GitHub
         </a>
-        {project.liveUrl && (
+        {project.live_url && (
           <a
-            href={project.liveUrl}
+            href={project.live_url ?? "#"}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 font-pixel text-[9px] px-5 py-3 border-2 transition-all hover:-translate-y-0.5"

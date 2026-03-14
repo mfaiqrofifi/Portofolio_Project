@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTheme } from "next-themes";
 
 interface Star {
@@ -31,6 +31,11 @@ export default function StarfieldBackground() {
   const starsRef = useRef<Star[]>([]);
   const animRef = useRef<number>(0);
   const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -87,8 +92,8 @@ export default function StarfieldBackground() {
     };
   }, []);
 
-  const isDark = resolvedTheme === "dark";
-  const isLight = resolvedTheme === "light";
+  const isDark = mounted && resolvedTheme === "dark";
+  const isLight = mounted && resolvedTheme === "light";
 
   // Shared fixed-layer styles
   const fixed: React.CSSProperties = {
@@ -106,6 +111,7 @@ export default function StarfieldBackground() {
       <canvas
         ref={canvasRef}
         aria-hidden="true"
+        suppressHydrationWarning
         style={{
           ...fixed,
           opacity: isDark ? 1 : 0,

@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import SafeImage from "@/components/SafeImage";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { Github, ExternalLink, FileText } from "lucide-react";
-import { Project } from "@/lib/dummy-projects";
+import { Project } from "@/lib/types";
 
 interface ProjectCardProps {
   project: Project;
@@ -81,16 +81,15 @@ export default function ProjectCard({ project, index = 0 }: ProjectCardProps) {
           className="relative h-40 overflow-hidden border-b-2"
           style={{ borderColor: "var(--border)" }}
         >
-          <Image
+          <SafeImage
             src={project.thumbnail}
             alt={project.title}
-            fill
-            className="object-cover"
             style={{
               filter: hovered ? "none" : "grayscale(20%) brightness(0.9)",
               transition: "filter 0.3s, transform 0.4s",
               transform: hovered ? "scale(1.05)" : "scale(1)",
             }}
+            placeholderLabel={project.domain ?? "project"}
           />
           {/* Scanline overlay */}
           <div
@@ -126,19 +125,19 @@ export default function ProjectCard({ project, index = 0 }: ProjectCardProps) {
             className="text-sm flex-1 leading-relaxed"
             style={{ color: "var(--muted)" }}
           >
-            {project.shortDescription}
+            {project.short_description}
           </p>
 
           {/* Tech stack */}
           <div className="flex flex-wrap gap-1.5">
-            {project.techStack.slice(0, 3).map((tech) => (
+            {project.tech_stack.slice(0, 3).map((tech) => (
               <span key={tech} className="tech-badge">
                 {tech}
               </span>
             ))}
-            {project.techStack.length > 3 && (
+            {project.tech_stack.length > 3 && (
               <span className="tech-badge">
-                +{project.techStack.length - 3}
+                +{project.tech_stack.length - 3}
               </span>
             )}
           </div>
@@ -173,7 +172,7 @@ export default function ProjectCard({ project, index = 0 }: ProjectCardProps) {
                 Dev Log
               </Link>
               <a
-                href={project.githubUrl}
+                href={project.github_url ?? "#"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-1.5 font-pixel text-[8px] py-2.5 px-3 border-2"
@@ -186,9 +185,9 @@ export default function ProjectCard({ project, index = 0 }: ProjectCardProps) {
               >
                 <Github size={11} />
               </a>
-              {project.liveUrl && (
+              {project.live_url && (
                 <a
-                  href={project.liveUrl}
+                  href={project.live_url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-1.5 font-pixel text-[8px] py-2.5 px-3 border-2"

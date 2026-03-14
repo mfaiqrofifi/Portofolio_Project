@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
+import SafeImage from "@/components/SafeImage";
 import { motion } from "framer-motion";
-import { ActivityItem } from "@/lib/dummy-activity";
+import { ActivityWithLinks } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 
 const TAG_STYLES: Record<
@@ -37,7 +37,7 @@ const DEFAULT_STYLE = {
 };
 
 interface ActivityCardProps {
-  activity: ActivityItem;
+  activity: ActivityWithLinks;
   index?: number;
   isLast?: boolean;
 }
@@ -47,7 +47,7 @@ export default function ActivityCard({
   index = 0,
   isLast = false,
 }: ActivityCardProps) {
-  const style = TAG_STYLES[activity.tag] ?? DEFAULT_STYLE;
+  const style = TAG_STYLES[activity.tag ?? "Learning"] ?? DEFAULT_STYLE;
 
   return (
     <motion.div
@@ -128,46 +128,48 @@ export default function ActivityCard({
             className="text-xs font-pixel"
             style={{ color: "var(--muted)" }}
           >
-            {formatDate(activity.date)}
+            {formatDate(activity.date ?? "")}
           </span>
         </div>
 
-        {/* Body */}
-        <div className="p-4 flex gap-4">
-          {activity.image && (
+        {/* Image banner — full width, only when image exists */}
+        {activity.image && (
+          <div
+            className="relative h-44 overflow-hidden border-b-2"
+            style={{ borderColor: "var(--border)" }}
+          >
+            <SafeImage src={activity.image} alt={activity.title} />
+            {/* Scanline overlay */}
             <div
-              className="relative w-32 h-24 flex-shrink-0 border-2 hidden sm:block"
-              style={{ borderColor: "var(--border)" }}
-            >
-              <Image
-                src={activity.image}
-                alt={activity.title}
-                fill
-                className="object-cover"
-              />
-            </div>
-          )}
-
-          <div className="flex-1 min-w-0 flex flex-col gap-2">
-            <h3
-              className="font-semibold text-base leading-snug"
-              style={{ color: "var(--foreground)" }}
-            >
-              {activity.title}
-            </h3>
-            <p
-              className="text-sm leading-relaxed"
-              style={{ color: "var(--muted)" }}
-            >
-              {activity.caption}
-            </p>
-            <p
-              className="text-xs leading-relaxed"
-              style={{ color: "var(--muted)", opacity: 0.7 }}
-            >
-              {activity.description}
-            </p>
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background:
+                  "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px)",
+              }}
+            />
           </div>
+        )}
+
+        {/* Body */}
+        <div className="p-4 flex flex-col gap-2">
+          <h3
+            className="font-semibold text-base leading-snug"
+            style={{ color: "var(--foreground)" }}
+          >
+            {activity.title}
+          </h3>
+          <p
+            className="text-sm leading-relaxed"
+            style={{ color: "var(--muted)" }}
+          >
+            {activity.caption}
+          </p>
+          <p
+            className="text-xs leading-relaxed"
+            style={{ color: "var(--muted)", opacity: 0.7 }}
+          >
+            {activity.description}
+          </p>
         </div>
       </motion.div>
     </motion.div>

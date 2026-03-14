@@ -1,26 +1,38 @@
-import { projects } from "@/lib/dummy-projects";
-import { articles } from "@/lib/dummy-articles";
-import { activities } from "@/lib/dummy-activity";
+import { getAllProjects } from "@/lib/queries/projects";
+import { getAllArticles } from "@/lib/queries/articles";
+import { getAllActivities } from "@/lib/queries/activities";
 import Link from "next/link";
 import { ArrowLeft, Folder, FileText, Activity } from "lucide-react";
 
-const stats = [
-  { label: "Projects", value: projects.length, icon: Folder, color: "#00f5ff" },
-  {
-    label: "Articles",
-    value: articles.length,
-    icon: FileText,
-    color: "#a78bfa",
-  },
-  {
-    label: "Activities",
-    value: activities.length,
-    icon: Activity,
-    color: "#34d399",
-  },
-];
+export const dynamic = "force-dynamic";
 
-export default function AdminDashboardPage() {
+export default async function AdminDashboardPage() {
+  const [projects, articles, activities] = await Promise.all([
+    getAllProjects(),
+    getAllArticles(),
+    getAllActivities(),
+  ]);
+
+  const stats = [
+    {
+      label: "Projects",
+      value: projects.length,
+      icon: Folder,
+      color: "#00f5ff",
+    },
+    {
+      label: "Articles",
+      value: articles.length,
+      icon: FileText,
+      color: "#a78bfa",
+    },
+    {
+      label: "Activities",
+      value: activities.length,
+      icon: Activity,
+      color: "#34d399",
+    },
+  ];
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-16">
       <div className="flex items-center justify-between mb-10">
@@ -92,16 +104,9 @@ export default function AdminDashboardPage() {
           className="text-sm"
           style={{ color: "var(--muted)", lineHeight: "1.7" }}
         >
-          This is a frontend-only admin panel. Backend functionality
-          (create/edit/delete) is not implemented yet. All data is served from
-          local dummy files in{" "}
-          <code
-            className="text-xs px-1 py-0.5"
-            style={{ background: "var(--background)", color: "var(--accent)" }}
-          >
-            /lib/
-          </code>
-          .
+          This is a read-only admin panel. Create/edit/delete functionality is
+          not yet implemented. All data is served live from the Neon PostgreSQL
+          database.
         </p>
       </div>
     </div>

@@ -1,11 +1,11 @@
 "use client";
 
-import { ActivityItem } from "@/lib/dummy-activity";
+import { ActivityWithLinks } from "@/lib/types";
 import ActivityCard from "./ActivityCard";
 import { motion } from "framer-motion";
 
 interface ActivityTimelineProps {
-  items: ActivityItem[];
+  items: ActivityWithLinks[];
 }
 
 export default function ActivityTimeline({ items }: ActivityTimelineProps) {
