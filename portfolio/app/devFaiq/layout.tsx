@@ -1,7 +1,6 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import AdminSignOut from "@/components/AdminSignOut";
 
 const NAV = [

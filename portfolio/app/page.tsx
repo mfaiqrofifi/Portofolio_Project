@@ -109,7 +109,7 @@ export default function HomePage() {
           className="border divide-y"
           style={{
             borderColor: "var(--border)",
-            // @ts-ignore
+            // @ts-expect-error - Tailwind CSS variable
             "--tw-divide-opacity": 1,
           }}
         >

@@ -3,7 +3,6 @@ import type {
   Project,
   Article,
   Activity,
-  ActivityLink,
   Profile,
   ContactLink,
   Home,

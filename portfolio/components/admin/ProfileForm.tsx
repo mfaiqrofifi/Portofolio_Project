@@ -52,8 +52,9 @@ export default function ProfileForm({ profile }: ProfileFormProps) {
       if (!res.ok) throw new Error("Update failed");
       router.refresh();
       alert("Profile updated successfully!");
-    } catch (err: any) {
-      setError(err.message ?? "Unknown error");
+    } catch (err) {
+      const error = err as Error;
+      setError(error.message ?? "Unknown error");
     } finally {
       setLoading(false);
     }
@@ -368,7 +369,8 @@ export default function ProfileForm({ profile }: ProfileFormProps) {
               className="text-sm text-center py-4"
               style={{ color: "var(--muted)" }}
             >
-              No tech stack groups yet. Click "Add Group" to create one.
+              No tech stack groups yet. Click &quot;Add Group&quot; to create
+              one.
             </p>
           )}
         </div>
@@ -445,7 +447,7 @@ export default function ProfileForm({ profile }: ProfileFormProps) {
               className="text-sm text-center py-4"
               style={{ color: "var(--muted)" }}
             >
-              No strengths yet. Click "Add Strength" to create one.
+              No strengths yet. Click &quot;Add Strength&quot; to create one.
             </p>
           )}
         </div>

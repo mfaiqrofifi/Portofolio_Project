@@ -65,8 +65,9 @@ export default function ContactLinkForm({ link, mode }: ContactLinkFormProps) {
       if (!res.ok) throw new Error("Save failed");
       router.push("/devFaiq/contact-links");
       router.refresh();
-    } catch (err: any) {
-      setError(err.message ?? "Unknown error");
+    } catch (err) {
+      const error = err as Error;
+      setError(error.message ?? "Unknown error");
     } finally {
       setLoading(false);
     }

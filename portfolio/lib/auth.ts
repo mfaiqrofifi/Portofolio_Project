@@ -15,10 +15,10 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user }) {
       return user?.email === ALLOWED_EMAIL;
     },
-    async session({ session, token }) {
+    async session({ session }) {
       return session;
     },
-    async jwt({ token, user }) {
+    async jwt({ token }) {
       return token;
     },
   },

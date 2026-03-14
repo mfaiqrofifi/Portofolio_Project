@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Home, HomeDomain } from "@/lib/types";
+import type { LucideIcon } from "lucide-react";
 import {
   Trash2,
   Plus,
@@ -16,7 +17,7 @@ import {
 } from "lucide-react";
 
 // Icon mapping for domains
-const DOMAIN_ICONS: Record<string, any> = {
+const DOMAIN_ICONS: Record<string, LucideIcon> = {
   backend: Server,
   fullstack: Layout,
   frontend: Code,
@@ -65,7 +66,8 @@ export default function HomeForm({ home }: { home: Home }) {
 
       alert("Home content updated!");
       router.refresh();
-    } catch (error: any) {
+    } catch (err) {
+      const error = err as Error;
       setError(error.message ?? "Unknown error");
       console.error(error);
     } finally {
@@ -142,7 +144,8 @@ export default function HomeForm({ home }: { home: Home }) {
               placeholder="~ /home/faiq"
             />
             <p className="text-xs mt-1" style={{ color: "var(--muted)" }}>
-              Short status text shown at the top (e.g., "~ /home/faiq")
+              Short status text shown at the top (e.g., &quot;~
+              /home/faiq&quot;)
             </p>
           </div>
 
@@ -366,7 +369,7 @@ export default function HomeForm({ home }: { home: Home }) {
               className="text-sm text-center py-4"
               style={{ color: "var(--muted)" }}
             >
-              No domains yet. Click "Add Domain" to create one.
+              No domains yet. Click &quot;Add Domain&quot; to create one.
             </p>
           )}
         </div>
