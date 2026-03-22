@@ -68,10 +68,10 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="group relative px-3 py-1.5 font-mono text-xs transition-colors duration-100"
+                className={`nav-module group relative px-3 py-1.5 font-mono text-xs transition-colors duration-150 ${active ? "active" : ""}`}
                 style={{ color: active ? "var(--foreground)" : "var(--muted)" }}
               >
-                {/* Hover/active prefix */}
+                {/* Active/hover prefix */}
                 <motion.span
                   className="font-mono text-xs"
                   style={{ color: "var(--accent)" }}
@@ -81,21 +81,16 @@ export default function Navbar() {
                     marginRight: active ? 4 : 0,
                   }}
                   initial={false}
-                  transition={{ duration: 0.1 }}
+                  transition={{ duration: 0.15 }}
                 >
                   &gt;{" "}
                 </motion.span>
                 <span
-                  className="group-hover:opacity-100"
+                  className="transition-opacity duration-150 group-hover:opacity-100"
                   style={{ opacity: active ? 1 : undefined }}
                 >
                   {link.label}
                 </span>
-                {/* Hover underline */}
-                <span
-                  className="absolute bottom-0 left-3 right-3 h-px scale-x-0 group-hover:scale-x-100 transition-transform duration-150 origin-left"
-                  style={{ background: "var(--border-strong)" }}
-                />
               </Link>
             );
           })}

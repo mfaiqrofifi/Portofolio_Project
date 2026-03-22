@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -108,14 +108,16 @@
 
   /* File list item */
   .file-item {
-    @apply flex items-center gap-3 py-2.5 px-3 cursor-pointer transition-all duration-100;
+    @apply flex items-center gap-3 py-2.5 px-3 cursor-pointer;
     border-left: 2px solid transparent;
     color: var(--muted);
+    transition: all 0.15s ease;
   }
   .file-item:hover {
     background: var(--surface-hover);
     color: var(--foreground);
     border-left-color: var(--border-strong);
+    padding-left: 14px;
   }
   .file-item.active {
     background: var(--surface);
@@ -154,6 +156,52 @@
     background: var(--background);
   }
 
+  /* ── System Panel ── */
+  .system-panel {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 2.5rem;
+  }
+  .dark .system-panel {
+    background: color-mix(in srgb, var(--surface) 60%, var(--background));
+    box-shadow:
+      0 0 0 1px var(--border),
+      0 4px 24px -4px rgba(56, 189, 248, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  }
+  .system-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--border);
+    background: color-mix(in srgb, var(--surface) 70%, var(--background));
+  }
+
+  /* ── Capability Module (domain row) ── */
+  .capability-module {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 10px 12px;
+    border-left: 2px solid transparent;
+    transition: all 0.15s ease;
+    border-bottom: 1px solid var(--border);
+  }
+  .capability-module:first-child {
+    border-top: 1px solid var(--border);
+  }
+  .capability-module:hover {
+    background: var(--surface);
+    border-left-color: var(--accent);
+    padding-left: 16px;
+  }
+  .capability-module:hover .capability-module-label {
+    opacity: 1;
+  }
+
   /* Command prefix */
   .cmd-prefix::before {
     content: ">";
@@ -171,6 +219,313 @@
   .dev-link:hover {
     text-decoration: underline;
     text-underline-offset: 3px;
+  }
+
+  /* ── Navbar module selector ── */
+  .nav-module {
+    position: relative;
+    transition: color 0.15s ease;
+  }
+  .nav-module::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 12px;
+    right: 12px;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.2s ease;
+  }
+  .nav-module:hover::after {
+    transform: scaleX(1);
+  }
+  .nav-module.active::after {
+    transform: scaleX(1);
+    background: var(--accent);
+  }
+
+  /* ═══════════════════════════════════════
+     HOME OS CHROME
+  ═══════════════════════════════════════ */
+
+  /* Outer hero OS frame */
+  .os-hero-frame {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .dark .os-hero-frame {
+    background: color-mix(in srgb, var(--surface) 55%, var(--background));
+    box-shadow:
+      0 0 0 1px var(--border),
+      0 8px 40px -8px rgba(56, 189, 248, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  }
+
+  /* Window title bar */
+  .os-window-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 14px;
+    border-bottom: 1px solid var(--border);
+    background: color-mix(in srgb, var(--background) 80%, var(--surface));
+  }
+  .dark .os-window-bar {
+    background: rgba(12, 12, 14, 0.85);
+  }
+
+  /* Traffic-light dots */
+  .os-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  /* Hero content area — 2 columns */
+  .os-hero-body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  @media (min-width: 640px) {
+    .os-hero-body {
+      grid-template-columns: 1fr 240px;
+    }
+  }
+  @media (min-width: 768px) {
+    .os-hero-body {
+      grid-template-columns: 1fr 280px;
+    }
+  }
+
+  .os-hero-left {
+    padding: 28px 24px 28px 24px;
+    border-right: none;
+  }
+  @media (min-width: 640px) {
+    .os-hero-left {
+      border-right: 1px solid var(--border);
+    }
+  }
+
+  /* Right panel — pixel avatar scene */
+  .os-hero-right {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 16px;
+    overflow: hidden;
+    min-height: 260px;
+  }
+
+  /* Pixel dot grid background for the right panel */
+  .pixel-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(
+      circle,
+      rgba(56, 189, 248, 0.12) 1px,
+      transparent 1px
+    );
+    background-size: 12px 12px;
+    -webkit-mask-image: radial-gradient(
+      ellipse 80% 80% at 50% 50%,
+      black 20%,
+      transparent 100%
+    );
+    mask-image: radial-gradient(
+      ellipse 80% 80% at 50% 50%,
+      black 20%,
+      transparent 100%
+    );
+  }
+
+  /* Glow ring behind avatar */
+  .avatar-ring {
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      rgba(56, 189, 248, 0.07) 0%,
+      rgba(167, 139, 250, 0.04) 50%,
+      transparent 70%
+    );
+    box-shadow: 0 0 40px 8px rgba(56, 189, 248, 0.05);
+  }
+  .dark .avatar-ring {
+    background: radial-gradient(
+      circle,
+      rgba(56, 189, 248, 0.1) 0%,
+      rgba(167, 139, 250, 0.06) 50%,
+      transparent 70%
+    );
+    box-shadow: 0 0 60px 16px rgba(56, 189, 248, 0.07);
+  }
+
+  /* Avatar wrapper */
+  .pixel-avatar-wrap {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .pixel-avatar-glow {
+    position: absolute;
+    inset: -20px;
+    background: radial-gradient(
+      circle at 50% 60%,
+      rgba(56, 189, 248, 0.08) 0%,
+      transparent 65%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Floating tech-chip labels on right panel */
+  .os-float-chip {
+    position: absolute;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px;
+    padding: 2px 5px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: var(--surface);
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    z-index: 3;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .dark .os-float-chip {
+    background: color-mix(in srgb, var(--surface) 80%, var(--background));
+    border-color: var(--border-strong);
+    color: var(--muted-dim);
+    box-shadow: 0 0 6px rgba(56, 189, 248, 0.05);
+  }
+
+  /* Quick nav pills */
+  .os-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--muted);
+    background: var(--background);
+    transition: all 0.15s ease;
+    text-decoration: none;
+  }
+  .os-pill:hover {
+    border-color: var(--accent);
+    color: var(--foreground);
+    background: var(--accent-dim);
+  }
+
+  /* Section OS frames */
+  .os-section-frame {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .dark .os-section-frame {
+    background: color-mix(in srgb, var(--surface) 55%, var(--background));
+    box-shadow:
+      0 0 0 1px var(--border),
+      0 4px 20px -4px rgba(56, 189, 248, 0.04);
+  }
+  .os-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--border);
+    background: color-mix(in srgb, var(--background) 80%, var(--surface));
+  }
+  .dark .os-section-header {
+    background: rgba(12, 12, 14, 0.7);
+  }
+}
+
+/* ── Pixel cursor animation (SVG) ── */
+.pixel-cursor {
+  animation: pixel-blink 1.1s step-end infinite;
+}
+
+/* ── Typewriter cursor ── */
+.typewriter-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 0.85em;
+  background-color: var(--accent);
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  flex-shrink: 0;
+  animation: pixel-blink 1s step-end infinite;
+}
+@keyframes pixel-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ── Pixel particle float ── */
+.pixel-float-1 {
+  animation: pfloat1 3.5s ease-in-out infinite;
+}
+.pixel-float-2 {
+  animation: pfloat2 4.2s ease-in-out infinite;
+}
+.pixel-float-3 {
+  animation: pfloat3 5s ease-in-out infinite;
+}
+@keyframes pfloat1 {
+  0%,
+  100% {
+    transform: translateY(0px);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(-4px);
+    opacity: 0.25;
+  }
+}
+@keyframes pfloat2 {
+  0%,
+  100% {
+    transform: translateY(0px);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-6px);
+    opacity: 0.15;
+  }
+}
+@keyframes pfloat3 {
+  0%,
+  100% {
+    transform: translateY(0px);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translateY(-3px);
+    opacity: 0.1;
   }
 }
 
